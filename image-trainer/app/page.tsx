@@ -154,7 +154,15 @@ export default function Home() {
         addLog(`Failed to resolve resource: ${e}. Trying fallback...`, 'error');
         scriptPath = 'python_backend/script.py'; 
       }
+      // Generate experiment ID
+      const now = new Date();
+      const timestamp = now
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .replace(/\..+/, '');
+      const experimentId = `exp_${timestamp}`;
 
+      addLog(`Experiment ID: ${experimentId}`, 'info');
       const args = [
         scriptPath,
         '--path', datasetPath,
@@ -162,14 +170,14 @@ export default function Home() {
         '--batch_size', batchSize.toString(),
         '--model', model
       ];
-
+      args.push('--experiment_id', experimentId);
       if (savePath) args.push('--save_path', savePath);
       if (zipDataset) args.push('--zip_dataset');
       if (onlyZip) args.push('--only_zip');
 
       addLog(`Starting command: python ${args.join(' ')}`, 'info');
 
-      const cmd = Command.create('python', args);
+      const cmd = Command.create('python3', args);
       commandRef.current = cmd;
 
       cmd.on('close', (data) => {
