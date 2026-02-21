@@ -79,7 +79,7 @@ function PreviewTable({ result }: { result: TabularResult }) {
         )}
         {result.loaded_path && (
           <span className="rounded-full bg-zinc-700 px-3 py-1 text-zinc-300 truncate max-w-xs">
-            {result.loaded_path.split(/[\\/]/).pop()}
+            {result.loaded_path.split(/[\\\/]/).pop()}
           </span>
         )}
         {result.message && (
@@ -360,120 +360,119 @@ export default function Home() {
       {!depsChecked && <DependencyWizard onComplete={() => setDepsChecked(true)} />}
       <div className={`flex min-h-screen items-center justify-center bg-zinc-950 font-sans ${!depsChecked ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100 transition-opacity duration-1000'}`}>
         <main className="flex min-h-screen w-full max-w-3xl flex-col py-12 px-8">
-        {/* ── Header ── */}
-        <header className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-3">
-            <Image
-              className="invert"
-              src="/next.svg"
-              alt="EPOQ logo"
-              width={80}
-              height={16}
-              priority
-            />
-            <span className="text-zinc-500 text-sm font-medium">EPOQ</span>
-          </div>
+          {/* ── Header ── */}
+          <header className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-3">
+              <Image
+                className="invert"
+                src="/next.svg"
+                alt="EPOQ logo"
+                width={80}
+                height={16}
+                priority
+              />
+              <span className="text-zinc-500 text-sm font-medium">EPOQ</span>
+            </div>
 
-          <button
-            id="gpu-check-btn"
-            onClick={checkGpu}
-            disabled={gpuLoading}
-            className="flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors"
-          >
-            {gpuLoading ? (
-              <span className="inline-block w-3.5 h-3.5 border-2 border-zinc-400/30 border-t-zinc-400 rounded-full animate-spin" />
-            ) : (
-              <span>⬡</span>
-            )}
-            Check GPU
-          </button>
-        </header>
-
-        {/* ── Tabs ── */}
-        <div className="flex gap-1 mb-8 rounded-xl bg-zinc-900 p-1 border border-zinc-800">
-          {(["trainer", "data"] as const).map((tab) => (
             <button
-              key={tab}
-              id={`tab-${tab}`}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-1 rounded-lg py-2 text-sm font-medium transition-all ${
-                activeTab === tab
-                  ? "bg-zinc-700 text-white shadow"
-                  : "text-zinc-500 hover:text-zinc-300"
-              }`}
+              id="gpu-check-btn"
+              onClick={checkGpu}
+              disabled={gpuLoading}
+              className="flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors"
             >
-              {tab === "trainer" ? "Image Trainer" : "Data"}
+              {gpuLoading ? (
+                <span className="inline-block w-3.5 h-3.5 border-2 border-zinc-400/30 border-t-zinc-400 rounded-full animate-spin" />
+              ) : (
+                <span>⬡</span>
+              )}
+              Check GPU
             </button>
-          ))}
-        </div>
+          </header>
 
-        {/* ── Tab Content ── */}
-        {activeTab === "trainer" && (
-          <div className="flex flex-col items-start gap-6">
-            <div>
-              <h1 className="text-3xl font-semibold text-white tracking-tight">
-                Image Trainer
-              </h1>
-              <p className="mt-2 text-zinc-400 leading-7">
-                Train and evaluate deep learning models on image datasets.
-                Configure your experiment, select a dataset, and start training
-                directly from this interface.
-              </p>
-            </div>
-
-            <GPUStatus/>
-
-            <div className="flex gap-3">
-              <a
-                href="https://vercel.com/new"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-medium text-black transition-colors hover:bg-zinc-200"
+          {/* ── Tabs ── */}
+          <div className="flex gap-1 mb-8 rounded-xl bg-zinc-900 p-1 border border-zinc-800">
+            {(["trainer", "data"] as const).map((tab) => (
+              <button
+                key={tab}
+                id={`tab-${tab}`}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 rounded-lg py-2 text-sm font-medium transition-all ${activeTab === tab
+                    ? "bg-zinc-700 text-white shadow"
+                    : "text-zinc-500 hover:text-zinc-300"
+                  }`}
               >
-                <Image
-                  className=""
-                  src="/vercel.svg"
-                  alt="Vercel"
-                  width={14}
-                  height={14}
-                />
-                Deploy
-              </a>
-              <a
-                href="https://nextjs.org/docs"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 items-center justify-center rounded-full border border-zinc-700 px-5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800"
-              >
-                Documentation
-              </a>
-            </div>
+                {tab === "trainer" ? "Image Trainer" : "Data"}
+              </button>
+            ))}
           </div>
-        )}
 
-        {activeTab === "data" && (
-          <div className="flex flex-col gap-2">
-            <div className="mb-2">
-              <h1 className="text-2xl font-semibold text-white tracking-tight">
-                Data Processor
-              </h1>
-              <p className="mt-1 text-sm text-zinc-500">
-                Load, clean, and encode CSV / Excel files using{" "}
-                <code className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-300">
-                  tabular_processor.py
-                </code>
-                .
-              </p>
+          {/* ── Tab Content ── */}
+          {activeTab === "trainer" && (
+            <div className="flex flex-col items-start gap-6">
+              <div>
+                <h1 className="text-3xl font-semibold text-white tracking-tight">
+                  Image Trainer
+                </h1>
+                <p className="mt-2 text-zinc-400 leading-7">
+                  Train and evaluate deep learning models on image datasets.
+                  Configure your experiment, select a dataset, and start training
+                  directly from this interface.
+                </p>
+              </div>
+
+              <GPUStatus />
+
+              <div className="flex gap-3">
+                <a
+                  href="https://vercel.com/new"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-10 items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-medium text-black transition-colors hover:bg-zinc-200"
+                >
+                  <Image
+                    className=""
+                    src="/vercel.svg"
+                    alt="Vercel"
+                    width={14}
+                    height={14}
+                  />
+                  Deploy
+                </a>
+                <a
+                  href="https://nextjs.org/docs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-10 items-center justify-center rounded-full border border-zinc-700 px-5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800"
+                >
+                  Documentation
+                </a>
+              </div>
             </div>
-            <DataTab />
-          </div>
-        )}
-      </main>
+          )}
 
-      {/* ── GPU Modal ── */}
-      {gpuOutput !== null && (
-        <GpuModal output={gpuOutput} onClose={() => setGpuOutput(null)} />
-      )}
+          {activeTab === "data" && (
+            <div className="flex flex-col gap-2">
+              <div className="mb-2">
+                <h1 className="text-2xl font-semibold text-white tracking-tight">
+                  Data Processor
+                </h1>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Load, clean, and encode CSV / Excel files using{" "}
+                  <code className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-300">
+                    tabular_processor.py
+                  </code>
+                  .
+                </p>
+              </div>
+              <DataTab />
+            </div>
+          )}
+        </main>
+
+        {/* ── GPU Modal ── */}
+        {gpuOutput !== null && (
+          <GpuModal output={gpuOutput} onClose={() => setGpuOutput(null)} />
+        )}
       </div>
     </>
   );

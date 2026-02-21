@@ -153,7 +153,6 @@ fn main() {
             run_check_gpu,
             get_system_info,
             check_dependencies
-
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

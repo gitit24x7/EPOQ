@@ -1,13 +1,20 @@
 import torch
 import sys
+import json
 
-print(f"Python Version: {sys.version}")
-print(f"PyTorch Version: {torch.__version__}")
-print(f"CUDA Available: {torch.cuda.is_available()}")
-if torch.cuda.is_available():
-    print(f"CUDA Version: {torch.version.cuda}")
-    print(f"Device Count: {torch.cuda.device_count()}")
-    print(f"Current Device: {torch.cuda.current_device()}")
-    print(f"Device Name: {torch.cuda.get_device_name(0)}")
-else:
-    print("CUDA is NOT available. This is likely due to installing the CPU-only version of PyTorch.")
+def get_gpu_info() -> dict:
+    cuda_available = torch.cuda.is_available()
+
+    info = {
+        "python_version": sys.version.split(" ")[0],
+        "torch_version": torch.__version__,
+        "cuda_available": cuda_available,
+        "cuda_version": torch.version.cuda if cuda_available else None,
+        "device_count": torch.cuda.device_count() if cuda_available else 0,
+        "device_name": torch.cuda.get_device_name(0) if cuda_available else None,
+    }
+
+    return info
+
+if __name__ == "__main__":
+    print(json.dumps(get_gpu_info()))
