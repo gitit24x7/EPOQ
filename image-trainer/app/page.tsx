@@ -11,6 +11,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
+import DependencyWizard from './components/DependencyWizard';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -105,6 +106,8 @@ export default function Home() {
   const [tabOutPath, setTabOutPath] = useState('');
   const [tabLoading, setTabLoading] = useState(false);
   const [tabResult, setTabResult] = useState<TabularResult | null>(null);
+
+  const [depsChecked, setDepsChecked] = useState(false);
 
   const logsEndRef = useRef<HTMLDivElement>(null);
   const commandRef = useRef<Command<string> | null>(null);
@@ -534,7 +537,9 @@ const exportAsJson = async () => {
 };
 
   return (
-    <div data-theme={isLightMode ? 'light' : 'dark'} className="min-h-screen font-sans bg-black text-zinc-100 theme-transition">
+    <>
+      {!depsChecked && <DependencyWizard onComplete={() => setDepsChecked(true)} />}
+      <div data-theme={isLightMode ? 'light' : 'dark'} className={`min-h-screen font-sans bg-black text-zinc-100 theme-transition ${!depsChecked ? 'hidden' : ''}`}>
       {/* Header */}
       <header className="sticky top-0 z-50 flex items-center justify-between bg-black/80 backdrop-blur-md border-b border-zinc-800/50 px-8 py-4 mb-8">
         <div className="flex items-center gap-4">
@@ -1219,5 +1224,6 @@ const exportAsJson = async () => {
 
 
     </div>
+    </>
   );
 }
