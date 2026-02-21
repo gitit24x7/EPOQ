@@ -114,6 +114,26 @@ async fn get_system_info(app: tauri::AppHandle) -> Result<String, String> {
     }
 }
 
+#[tauri::command]
+async fn check_dependencies(app: tauri::AppHandle) -> Result<String, String> {
+    println!("DEBUG: Running backend check_dependencies");
+    let script = "import sys, json, importlib.util; p = lambda x: importlib.util.find_spec(x) is not None; print(json.dumps({'python': True, 'executable': sys.executable, 'version': sys.version.split()[0], 'pandas': p('pandas'), 'sklearn': p('sklearn'), 'torch': p('torch')}))";
+    match run_python(&app, &["-c", script]).await {
+        Ok(output) => {
+            println!("DEBUG: Python stdout: {}", output);
+            Ok(output.trim().to_string())
+        },
+        Err(e) => {
+            println!("DEBUG: Python error: {}", e);
+            let error_json = format!(
+                "{{\"python\": false, \"version\": null, \"pandas\": false, \"sklearn\": false, \"torch\": false, \"error\": \"{}\"}}",
+                e.replace("\"", "\\\"").replace("\n", " ")
+            );
+            Ok(error_json)
+        }
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -122,7 +142,9 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             run_tabular_processor,
             run_check_gpu,
-            get_system_info
+            get_system_info,
+            check_dependencies
+
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
