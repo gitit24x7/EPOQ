@@ -181,8 +181,13 @@ body {
 
 /* Enhance Dark Mode Contrast */
 [data-theme="dark"] .border-zinc-800, 
-[data-theme="dark"] .border-zinc-800\/50 {
-  border-color: rgba(255, 255, 255, 0.15) !important; /* Brighter, more visible border */
+[data-theme="dark"] .border-zinc-800\/50,
+[data-theme="dark"] .border-zinc-700,
+[data-theme="dark"] .border-t,
+[data-theme="dark"] .border-b,
+[data-theme="dark"] .border-l,
+[data-theme="dark"] .border-r {
+  border-color: rgba(255, 255, 255, 0.3) !important; /* Brighter, more visible border */
 }
 
 [data-theme="dark"] .bg-zinc-900\/30, 

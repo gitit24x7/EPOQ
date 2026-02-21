@@ -792,14 +792,14 @@ export default function Home() {
                               </div>
                               <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={chartData}>
-                                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                                  <XAxis dataKey="epoch" stroke="#52525b" tick={{fontSize: 12}} tickLine={false} axisLine={false} dy={10} />
-                                  <YAxis stroke="#52525b" tick={{fontSize: 12}} tickLine={false} axisLine={false} dx={-10} domain={[0, 1]} />
+                                  <CartesianGrid strokeDasharray="3 3" stroke={isLightMode ? '#e4e4e7' : '#52525b'} vertical={false} />
+                                  <XAxis dataKey="epoch" stroke={isLightMode ? '#52525b' : '#a1a1aa'} tick={{fontSize: 12}} tickLine={false} axisLine={false} dy={10} />
+                                  <YAxis stroke={isLightMode ? '#52525b' : '#a1a1aa'} tick={{fontSize: 12}} tickLine={false} axisLine={false} dx={-10} domain={[0, 1]} />
                                   <Tooltip 
-                                    contentStyle={{ backgroundColor: '#09090b', borderColor: '#27272a', borderRadius: '8px', color: '#fff' }} 
-                                    itemStyle={{ color: '#fff' }}
+                                    contentStyle={{ backgroundColor: isLightMode ? '#fff' : '#09090b', borderColor: isLightMode ? '#e4e4e7' : '#27272a', borderRadius: '8px', color: isLightMode ? '#000' : '#fff' }} 
+                                    itemStyle={{ color: isLightMode ? '#000' : '#fff' }}
                                   />
-                                  <Line type="monotone" dataKey="accuracy" stroke="#fff" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#fff' }} />
+                                  <Line type="monotone" dataKey="accuracy" stroke={isLightMode ? '#000' : '#fff'} strokeWidth={2} dot={false} activeDot={{ r: 4, fill: isLightMode ? '#000' : '#fff' }} />
                                 </LineChart>
                               </ResponsiveContainer>
                            </div>
@@ -810,12 +810,12 @@ export default function Home() {
                               </div>
                               <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={chartData}>
-                                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                                  <XAxis dataKey="epoch" stroke="#52525b" tick={{fontSize: 12}} tickLine={false} axisLine={false} dy={10} />
-                                  <YAxis stroke="#52525b" tick={{fontSize: 12}} tickLine={false} axisLine={false} dx={-10} />
+                                  <CartesianGrid strokeDasharray="3 3" stroke={isLightMode ? '#e4e4e7' : '#52525b'} vertical={false} />
+                                  <XAxis dataKey="epoch" stroke={isLightMode ? '#52525b' : '#a1a1aa'} tick={{fontSize: 12}} tickLine={false} axisLine={false} dy={10} />
+                                  <YAxis stroke={isLightMode ? '#52525b' : '#a1a1aa'} tick={{fontSize: 12}} tickLine={false} axisLine={false} dx={-10} />
                                   <Tooltip 
-                                    contentStyle={{ backgroundColor: '#09090b', borderColor: '#27272a', borderRadius: '8px', color: '#fff' }} 
-                                    itemStyle={{ color: '#fff' }}
+                                    contentStyle={{ backgroundColor: isLightMode ? '#fff' : '#09090b', borderColor: isLightMode ? '#e4e4e7' : '#27272a', borderRadius: '8px', color: isLightMode ? '#000' : '#fff' }} 
+                                    itemStyle={{ color: isLightMode ? '#000' : '#fff' }}
                                   />
                                   <Line type="monotone" dataKey="loss" stroke="#ef4444" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#ef4444' }} />
                                 </LineChart>
