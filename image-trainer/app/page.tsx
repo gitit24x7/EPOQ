@@ -924,7 +924,7 @@ const fetchSystemInfo = async () => {
            )}
 
            {/* Content Tabs */}
-           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl flex-1 flex flex-col overflow-hidden h-auto max-h-[60vh] backdrop-blur-sm">
+           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl flex-1 flex flex-col overflow-hidden min-h-[500px] max-h-[80vh] h-[75vh] backdrop-blur-sm">
               <div className="flex border-b border-zinc-800/50 px-2 flex-none">
                  <button 
                    onClick={() => setActiveTab('logs')}
@@ -1248,22 +1248,105 @@ const fetchSystemInfo = async () => {
                      )}
                    </div>
                  )}
-                 {activeTab === 'system' && (
-  <div className="p-8">
+{activeTab === 'system' && (
+  <div className="p-8 space-y-8 animate-in fade-in duration-500">
     {systemLoading && (
-      <div className="text-zinc-500 text-sm">Loading system information...</div>
+      <div className="flex items-center justify-center p-12">
+        <span className="inline-block w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+      </div>
     )}
 
     {systemError && (
-      <div className="text-red-400 text-sm">
-        Failed to load system info: {systemError}
+      <div className="p-6 bg-red-900/10 border border-red-900/30 rounded-xl text-red-400">
+        <div className="flex items-center gap-3 mb-2 text-lg font-semibold">
+          <AlertCircle className="w-5 h-5" /> Error Loading System Info
+        </div>
+        <p className="text-sm opacity-80">{systemError}</p>
       </div>
     )}
 
     {systemInfo && (
-      <pre className="text-xs text-zinc-300 bg-zinc-900 p-4 rounded-xl overflow-auto">
-        {JSON.stringify(systemInfo, null, 2)}
-      </pre>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Hardware Card */}
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <Cpu className="w-5 h-5 text-emerald-400" />
+            <h3 className="text-lg font-semibold text-zinc-100">Hardware Overview</h3>
+          </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b border-zinc-800/50 pb-3">
+              <span className="text-zinc-500 text-sm">Processor</span>
+              <span className="text-zinc-300 text-sm break-words text-right max-w-[60%] font-medium">{systemInfo.hardware?.cpu || 'Unknown'}</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-zinc-800/50 pb-3">
+              <span className="text-zinc-500 text-sm">Logical Cores</span>
+              <span className="text-zinc-300 text-sm font-medium">{systemInfo.hardware?.cores}</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-zinc-800/50 pb-3">
+              <span className="text-zinc-500 text-sm">Total Memory</span>
+              <span className="text-zinc-300 text-sm font-medium">{systemInfo.hardware?.ram_total_gb} GB</span>
+            </div>
+            <div className="flex justify-between items-center pb-1">
+              <span className="text-zinc-500 text-sm">Available Memory</span>
+              <span className="text-zinc-300 text-sm font-medium">{systemInfo.hardware?.ram_available_gb} GB</span>
+            </div>
+          </div>
+        </div>
+
+        {/* AI & Compute Card */}
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <Activity className="w-5 h-5 text-blue-400" />
+            <h3 className="text-lg font-semibold text-zinc-100">AI Compute & Python</h3>
+          </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b border-zinc-800/50 pb-3">
+              <span className="text-zinc-500 text-sm">PyTorch Version</span>
+              <span className="text-zinc-300 text-sm font-medium">{systemInfo.torch?.version}</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-zinc-800/50 pb-3">
+              <span className="text-zinc-500 text-sm">CUDA Support</span>
+              <span className="text-zinc-300 text-sm font-medium">
+                {systemInfo.torch?.cuda_available ? (
+                  <span className="text-emerald-400 flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5" /> Available ({systemInfo.torch.cuda_version})</span>
+                ) : (
+                  <span className="text-zinc-500">Not Available</span>
+                )}
+              </span>
+            </div>
+            <div className="flex justify-between items-center border-b border-zinc-800/50 pb-3">
+              <span className="text-zinc-500 text-sm">Active GPU</span>
+              <span className="text-zinc-300 text-sm font-medium max-w-[60%] text-right">{systemInfo.torch?.gpu_name || 'CPU Only'}</span>
+            </div>
+            <div className="flex justify-between items-center pb-1">
+              <span className="text-zinc-500 text-sm">Python Runtime</span>
+              <span className="text-zinc-300 text-sm font-medium">v{systemInfo.python?.version}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Platform Card */}
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 md:col-span-2 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <Terminal className="w-5 h-5 text-purple-400" />
+            <h3 className="text-lg font-semibold text-zinc-100">Platform Architecture</h3>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+             <div className="p-4 bg-zinc-800/20 rounded-xl border border-zinc-800/50">
+               <div className="text-zinc-500 text-xs mb-1 uppercase tracking-wider">Operating System</div>
+               <div className="text-zinc-300 text-sm font-medium">{systemInfo.platform?.os} {systemInfo.platform?.release}</div>
+             </div>
+             <div className="p-4 bg-zinc-800/20 rounded-xl border border-zinc-800/50">
+               <div className="text-zinc-500 text-xs mb-1 uppercase tracking-wider">Architecture</div>
+               <div className="text-zinc-300 text-sm font-medium">{systemInfo.platform?.architecture}</div>
+             </div>
+             <div className="p-4 bg-zinc-800/20 rounded-xl border border-zinc-800/50 md:col-span-2 overflow-hidden flex flex-col justify-center">
+               <div className="text-zinc-500 text-xs mb-1 uppercase tracking-wider">Python Executable Path</div>
+               <div className="text-zinc-400 text-xs font-mono break-all line-clamp-2" title={systemInfo.python?.executable}>{systemInfo.python?.executable}</div>
+             </div>
+          </div>
+        </div>
+      </div>
     )}
   </div>
 )}
