@@ -96,6 +96,23 @@ async fn run_check_gpu(app: tauri::AppHandle) -> Result<String, String> {
         Err(e) => Err(format!("GPU detection failed: {}", e)),
     }
 }
+/// Runs system_info.py and returns structured JSON string.
+#[tauri::command]
+async fn get_system_info(app: tauri::AppHandle) -> Result<String, String> {
+    let script_path = app
+        .path()
+        .resource_dir()
+        .map_err(|e| e.to_string())?
+        .join("python_backend")
+        .join("system_info.py");
+
+    let script = script_path.to_string_lossy().to_string();
+
+    match run_python(&app, &[script.as_str()]).await {
+        Ok(output) => Ok(output.trim().to_string()),
+        Err(e) => Err(format!("System info failed: {}", e)),
+    }
+}
 
 #[tauri::command]
 async fn check_dependencies(app: tauri::AppHandle) -> Result<String, String> {
@@ -125,7 +142,9 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             run_tabular_processor,
             run_check_gpu,
+            get_system_info,
             check_dependencies
+
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

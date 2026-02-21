@@ -96,7 +96,7 @@ export default function Home() {
   const [evalResult, setEvalResult] = useState<EvalResult | null>(null);
   const [matrixImageUrl, setMatrixImageUrl] = useState<string | null>(null);
   const [imageLoadError, setImageLoadError] = useState(false);
-  const [activeTab, setActiveTab] = useState<'logs' | 'charts' | 'results' | 'data'>('logs');
+  const [activeTab, setActiveTab] = useState<'logs' | 'charts' | 'results' | 'data' | 'system'>('logs');
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   // Tabular / GPU state
   const [tabFile, setTabFile] = useState('');
@@ -106,9 +106,10 @@ export default function Home() {
   const [tabOutPath, setTabOutPath] = useState('');
   const [tabLoading, setTabLoading] = useState(false);
   const [tabResult, setTabResult] = useState<TabularResult | null>(null);
-
+  const [systemInfo, setSystemInfo] = useState<any | null>(null);
+  const [systemLoading, setSystemLoading] = useState(false);
+  const [systemError, setSystemError] = useState<string | null>(null);
   const [depsChecked, setDepsChecked] = useState(false);
-
   const logsEndRef = useRef<HTMLDivElement>(null);
   const commandRef = useRef<Command<string> | null>(null);
   const childRef = useRef<any>(null);
@@ -247,6 +248,11 @@ export default function Home() {
       logsEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }, [logs, activeTab]);
+  useEffect(() => {
+  if (activeTab === 'system' && !systemInfo) {
+    fetchSystemInfo();
+  }
+}, [activeTab]);
 
   useEffect(() => {
     async function loadMatrixImage() {
@@ -533,6 +539,20 @@ const exportAsJson = async () => {
   } catch (err) {
     console.error("EXPORT ERROR:", err);
     addLog(`Export failed: ${err}`, "error");
+  }
+};
+const fetchSystemInfo = async () => {
+  setSystemLoading(true);
+  setSystemError(null);
+
+  try {
+    const raw: string = await invoke("get_system_info");
+    const parsed = JSON.parse(raw);
+    setSystemInfo(parsed);
+  } catch (err) {
+    setSystemError(String(err));
+  } finally {
+    setSystemLoading(false);
   }
 };
 
@@ -930,6 +950,17 @@ const exportAsJson = async () => {
                  >
                    <Database className="w-4 h-4" /> Data
                  </button>
+                 <button 
+                onClick={() => setActiveTab('system')}
+                className={cn(
+                  "px-6 py-4 text-sm font-medium border-b-2 transition-all flex items-center gap-2",
+                  activeTab === 'system'
+                    ? "border-white text-white"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300"
+                )}
+              >
+                <Cpu className="w-4 h-4" /> System
+              </button>
               </div>
 
               <div className="flex-1 overflow-y-auto bg-black/50 scrollbar-thin">
@@ -1217,6 +1248,25 @@ const exportAsJson = async () => {
                      )}
                    </div>
                  )}
+                 {activeTab === 'system' && (
+  <div className="p-8">
+    {systemLoading && (
+      <div className="text-zinc-500 text-sm">Loading system information...</div>
+    )}
+
+    {systemError && (
+      <div className="text-red-400 text-sm">
+        Failed to load system info: {systemError}
+      </div>
+    )}
+
+    {systemInfo && (
+      <pre className="text-xs text-zinc-300 bg-zinc-900 p-4 rounded-xl overflow-auto">
+        {JSON.stringify(systemInfo, null, 2)}
+      </pre>
+    )}
+  </div>
+)}
               </div>
            </div>
         </section>
