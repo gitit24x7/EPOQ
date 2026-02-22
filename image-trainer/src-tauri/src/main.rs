@@ -143,6 +143,38 @@ async fn check_dependencies(app: tauri::AppHandle) -> Result<String, String> {
     }
 }
 
+/// Runs predict.py for single image inference.
+#[tauri::command]
+async fn run_prediction(
+    app: tauri::AppHandle,
+    image: String,
+    model_path: String,
+    model_type: String,
+    classes: String,
+) -> Result<String, String> {
+    let script_path = app
+        .path()
+        .resource_dir()
+        .map_err(|e| e.to_string())?
+        .join("python_backend")
+        .join("predict.py");
+
+    let script = script_path.to_string_lossy().to_string().replace("\\\\?\\", "");
+
+    let args = [
+        script.as_str(),
+        "--image", image.as_str(),
+        "--model_path", model_path.as_str(),
+        "--model_type", model_type.as_str(),
+        "--classes", classes.as_str(),
+    ];
+
+    match run_python(&app, &args).await {
+        Ok(output) => Ok(output.trim().to_string()),
+        Err(e) => Err(format!("Prediction failed: {}", e)),
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -152,7 +184,8 @@ fn main() {
             run_tabular_processor,
             run_check_gpu,
             get_system_info,
-            check_dependencies
+            check_dependencies,
+            run_prediction
         ])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();

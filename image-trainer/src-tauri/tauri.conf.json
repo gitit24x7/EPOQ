@@ -11,6 +11,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "EPOQ",
         "width": 1024,
         "height": 768,
@@ -32,7 +33,9 @@
       "icons/icon.png",
       "icons/icon.ico"
     ],
-    "resources": ["python_backend/**/*"],
+    "resources": [
+      "python_backend/**/*"
+    ],
     "externalBin": []
   }
 }

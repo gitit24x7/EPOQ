@@ -180,6 +180,16 @@ def main():
         dataset_sizes['test'] = len(test_dataset)
 
     print(f"Classes: {class_names}", flush=True)
+    
+    # --- Save Classes Mapping ---
+    classes_path = os.path.join(save_dir, 'classes.json')
+    try:
+        with open(classes_path, 'w') as f:
+            json.dump(class_names, f)
+        print(f"Saved class mapping to: {classes_path}", flush=True)
+    except Exception as e:
+        print(f"Warning: Failed to save classes.json: {e}", flush=True)
+
     print(f"Split sizes: Train={dataset_sizes.get('train',0)}, Val={dataset_sizes.get('val',0)}, Test={dataset_sizes.get('test',0)}", flush=True)
 
     # --- Zip Dataset (Optional) ---
